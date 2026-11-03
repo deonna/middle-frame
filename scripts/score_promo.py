@@ -343,6 +343,15 @@ def find_change(cue, w, h, crop=None, look=2.0):
     return (cue - 0.4 + hit / 30) if hit is not None else cue
 
 
+def find_text_change(cue, look=1.2, min_px=800):
+    """The first frame with a real on-screen change (used for both switches). Titles rewriting is a few thousand sharp pixel changes, too small for a mean difference: count them, at full
+    resolution, in a window right after the flip (a codec keyframe can't sneak in that close)."""
+    f = frames(RAW, cue - 0.1, look, 1280, 720).astype(np.int16)
+    for i in range(1, len(f)):
+        if (np.abs(f[i] - f[i - 1])[120:] > 40).sum() > min_px: return cue - 0.1 + i / 30
+    return cue + 0.05
+
+
 def pill_png(label, path):
     from PIL import Image, ImageDraw, ImageFont
     f = ImageFont.truetype(str(FONT), 30); head, _, state = label.rpartition(" ")
@@ -368,8 +377,8 @@ def loudnorm(src, dst):
 
 def main():
     cues = json.loads(CUES.read_text())
-    t_on = find_change(cues["frames_on"], 160, 90)
-    t_calm = find_change(cues["calm_on"], 640, 360, crop=(40, 360))
+    t_on = find_text_change(cues["frames_on"])             # the first frame where any thumbnail has swapped
+    t_calm = find_text_change(cues["calm_on"])
     a0, a1 = t_on - DROP, t_on + (BREAK - DROP)                 # off for 2 bars, on for 4 (incl. the scroll)
     b0, b1 = t_calm - (CALM - BREAK), t_calm + (END - CALM)     # loud for 2 bars, calm for 2
     print(f"[1/4] visual changes: frames on {t_on:.3f} s (flip {cues['frames_on']:.3f}), calm titles {t_calm:.3f} s (flip {cues['calm_on']:.3f})")

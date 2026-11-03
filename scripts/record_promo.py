@@ -20,7 +20,7 @@ ROOT = Path(__file__).resolve().parents[1]
 EXT = ROOT / "extension"
 RAW, CUES = ROOT / "store/.promo_raw.webm", ROOT / "store/.promo_cues.json"
 CHANNEL = "https://www.youtube.com/@MrBeast/videos"
-LOUD = "https://www.youtube.com/results?search_query=INSANE+GONE+WRONG"
+LOUD = "https://www.youtube.com/@Sidemen/videos"                      # a grid of ALL-CAPS titles
 
 
 def main():
@@ -40,7 +40,8 @@ def main():
         cues["scroll"] = at()
         for _ in range(12): pg.mouse.wheel(0, 240); pg.wait_for_timeout(300)
         pg.wait_for_timeout(2000); cues["a_end"] = at()
-        pg.goto(LOUD, wait_until="domcontentloaded", timeout=60000); pg.wait_for_timeout(4500)
+        pg.goto(LOUD, wait_until="domcontentloaded", timeout=60000); pg.wait_for_timeout(4000)
+        pg.mouse.wheel(0, 380); pg.wait_for_timeout(1200)                     # frame the grid of titles
         cues["b_start"] = at(); pg.wait_for_timeout(4000)
         cues["calm_on"] = at(); setv(calmTitles=True); pg.wait_for_timeout(4500)
         cues["end"] = at()
