@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Middle Frame: YouTube thumbnails, minus the shocked face</title>
+  <meta name="description" content="A tiny Chrome extension that swaps every YouTube thumbnail for YouTube's own frame from the middle of the video.">
+  <meta property="og:title" content="Middle Frame">
+  <meta property="og:description" content="YouTube thumbnails, minus the shocked face.">
+  <meta property="og:image" content="https://deonna.github.io/middle-frame/img/og.png">
+  <link rel="icon" href="img/icon128.png">
+  <style>
+    :root { --ink: #17171a; --muted: #5f5e66; --bg: #fbfaf7; --card: #ffffff; --line: #e6e3dc; --mark: #ffe14d; }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--bg); color: var(--ink); font: 17px/1.55 -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif; }
+    main { max-width: 980px; margin: 0 auto; padding: 56px 22px 40px; }
+    header { display: flex; align-items: center; gap: 14px; }
+    header img { width: 52px; height: 52px; }
+    h1 { font-size: clamp(34px, 6vw, 54px); line-height: 1.05; letter-spacing: -0.03em; margin: 28px 0 14px; }
+    h1 mark { background: linear-gradient(transparent 12%, var(--mark) 12%, var(--mark) 88%, transparent 88%); color: inherit; padding: 0 .08em; }
+    .lede { font-size: 20px; color: var(--muted); max-width: 640px; margin: 0 0 30px; }
+    .cta { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 44px; }
+    .btn { display: inline-flex; align-items: center; gap: 8px; padding: 13px 20px; border-radius: 10px; font-weight: 650; text-decoration: none; }
+    .btn.primary { background: var(--ink); color: #fff; }
+    .btn.ghost { border: 1.5px solid var(--line); color: var(--ink); background: var(--card); }
+    .compare { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    figure { margin: 0; background: var(--card); border: 1px solid var(--line); border-radius: 12px; overflow: hidden; }
+    figure img { display: block; width: 100%; height: auto; }
+    figcaption { padding: 10px 14px; font-size: 14px; color: var(--muted); border-top: 1px solid var(--line); }
+    figcaption b { color: var(--ink); }
+    section { margin-top: 56px; }
+    h2 { font-size: 24px; letter-spacing: -0.015em; margin: 0 0 14px; }
+    ol { padding-left: 22px; } li { margin: 6px 0; }
+    code { background: #f0eee8; padding: 2px 6px; border-radius: 6px; font-size: 15px; }
+    .two { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; }
+    .note { color: var(--muted); font-size: 15px; }
+    footer { margin-top: 64px; padding-top: 18px; border-top: 1px solid var(--line); font-size: 14px; color: var(--muted); display: flex; flex-wrap: wrap; gap: 8px 18px; }
+    footer a, .note a, p a { color: inherit; }
+    @media (max-width: 720px) { .compare, .two { grid-template-columns: 1fr; } main { padding-top: 36px; } }
+  </style>
+</head>
+<body>
+<main>
+  <header><img src="img/icon128.png" alt=""><strong>Middle Frame</strong></header>
+
+  <h1>YouTube thumbnails,<br>minus the <mark>shocked face</mark>.</h1>
+  <p class="lede">Middle Frame swaps every thumbnail on YouTube for YouTube's own frame from the middle of the video.
+    It's the trick Andrej Karpathy used for <a href="https://karpathy.bearblog.dev/hacker-tube/">HackerTube</a>, on the real YouTube.</p>
+
+  <div class="cta">
+    <a class="btn primary" href="https://github.com/deonna/middle-frame/releases/latest/download/middle-frame.zip">Download for Chrome</a>
+    <a class="btn ghost" href="https://github.com/deonna/middle-frame">Source on GitHub</a>
+  </div>
+
+  <div class="compare">
+    <figure><img src="img/before_grid.png" alt="A YouTube channel page with the uploaded thumbnails: open mouths, big text, arrows."><figcaption><b>Before.</b> The uploaded thumbnails.</figcaption></figure>
+    <figure><img src="img/after_grid.png" alt="The same page with Middle Frame on: each thumbnail is a calm frame from the middle of the video."><figcaption><b>After.</b> What's actually in the video.</figcaption></figure>
+  </div>
+
+  <section class="two">
+    <div>
+      <h2>Install (2 minutes)</h2>
+      <ol>
+        <li><a href="https://github.com/deonna/middle-frame/releases/latest/download/middle-frame.zip">Download the zip</a> and unzip it.</li>
+        <li>Open <code>chrome://extensions</code> and turn on <b>Developer mode</b> (top right).</li>
+        <li>Click <b>Load unpacked</b> and pick the unzipped folder.</li>
+        <li>Open YouTube. Click the extension's icon to switch things on and off.</li>
+      </ol>
+      <p class="note">Chrome Web Store listing on the way. Works in Chrome, Edge, Brave and Arc.</p>
+    </div>
+    <div>
+      <h2>Two switches</h2>
+      <p><b>Middle frames</b> (on): every thumbnail becomes YouTube's auto-generated frame from mid-video, so you see the video, not the ad for it.</p>
+      <p><b>Calm titles</b> (off): LOUD WORDS get quiet, and the 😱 and !!! go away.</p>
+      <h2 style="margin-top:28px">Privacy</h2>
+      <p>Collects nothing. No analytics, no accounts, no servers. It only runs on youtube.com and saves your two switches in Chrome. <a href="privacy.html">Privacy policy</a>.</p>
+    </div>
+  </section>
+
+  <footer>
+    <span>Made by <a href="https://deonnahodges.com">Deonna Hodges</a></span>
+    <a href="https://github.com/deonna/middle-frame">GitHub</a>
+    <a href="privacy.html">Privacy</a>
+    <span>Not affiliated with YouTube or Google.</span>
+  </footer>
+</main>
+</body>
+</html>

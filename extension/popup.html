@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Middle Frame</title>
+  <style>
+    :root { color-scheme: light dark; --ink: #17171a; --muted: #6b6b72; --bg: #fbfaf7; --line: #e6e3dc; --mark: #ffe14d; }
+    @media (prefers-color-scheme: dark) { :root { --ink: #f3f2ee; --muted: #a3a2a8; --bg: #17171a; --line: #2c2c31; } }
+    * { box-sizing: border-box; }
+    body { margin: 0; width: 290px; font: 14px/1.4 -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif; color: var(--ink); background: var(--bg); }
+    header { display: flex; align-items: center; gap: 10px; padding: 14px 16px 10px; }
+    header img { width: 28px; height: 28px; }
+    h1 { font-size: 15px; margin: 0; letter-spacing: -0.01em; }
+    p.sub { margin: 0 16px 12px; color: var(--muted); font-size: 12.5px; }
+    .row { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 11px 16px; border-top: 1px solid var(--line); }
+    .row b { font-weight: 600; display: block; }
+    .row small { color: var(--muted); font-size: 12px; }
+    .switch { position: relative; width: 38px; height: 22px; flex: none; }
+    .switch input { opacity: 0; width: 0; height: 0; }
+    .track { position: absolute; inset: 0; background: var(--line); border-radius: 999px; transition: background .15s; cursor: pointer; }
+    .track::after { content: ""; position: absolute; top: 3px; left: 3px; width: 16px; height: 16px; border-radius: 50%; background: #fff; box-shadow: 0 1px 2px rgba(0,0,0,.25); transition: transform .15s; }
+    input:checked + .track { background: var(--ink); }
+    input:checked + .track::after { transform: translateX(16px); background: var(--mark); }
+    input:focus-visible + .track { outline: 2px solid var(--mark); outline-offset: 2px; }
+    footer { padding: 10px 16px 14px; border-top: 1px solid var(--line); font-size: 12px; color: var(--muted); }
+    footer a { color: inherit; }
+  </style>
+</head>
+<body>
+  <header>
+    <img src="icons/icon48.png" alt="">
+    <h1>Middle Frame</h1>
+  </header>
+  <p class="sub">See the middle of the video, not the shocked face.</p>
+  <label class="row">
+    <span><b>Middle frames</b><small>YouTube's own frame from mid-video</small></span>
+    <span class="switch"><input type="checkbox" id="frames"><span class="track"></span></span>
+  </label>
+  <label class="row">
+    <span><b>Calm titles</b><small>LOUD WORDS get quiet, no 😱 or !!!</small></span>
+    <span class="switch"><input type="checkbox" id="calmTitles"><span class="track"></span></span>
+  </label>
+  <footer>Changes apply right away. Collects nothing. <a href="https://deonna.github.io/middle-frame/" target="_blank" rel="noopener">About</a></footer>
+  <script src="popup.js"></script>
+</body>
+</html>
