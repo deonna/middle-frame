@@ -1,3 +1,6 @@
 dist/
 .DS_Store
 __pycache__/
+store/.promo_raw.webm
+store/.promo_cues.json
+store/.promo_*

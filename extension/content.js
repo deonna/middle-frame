@@ -98,13 +98,22 @@
   const LOUD = /\b[A-Z][A-Z0-9'’]*[A-Z]\b/g; // a word in ALL CAPS
   const SHOCK = /[\u{1F631}\u{1F92F}\u{1F633}\u{1F632}\u{1F62E}\u{1F628}\u{203C}\u{2757}\u{2755}]\uFE0F?/gu;
 
-  const calm = (s) =>
-    s
-      .replace(LOUD, (w) => (w.replace(/[^A-Z]/g, "").length >= 4 ? w.toLowerCase() : w)) // keep AI, USA, NBA
-      .replace(SHOCK, "")
-      .replace(/!{2,}/g, "!")
-      .replace(/\?{2,}/g, "?")
-      .replace(/ {2,}/g, " ");
+  const ACRONYMS = new Set(["AI", "USA", "UK", "US", "EU", "NBA", "NFL", "NHL", "MLB", "UFC", "WWE", "F1", "GTA", "PS5", "PC",
+    "TV", "DIY", "CEO", "FBI", "CIA", "NASA", "GPT", "ASMR", "DJ", "IRL", "NYC", "4K", "HD", "MIT", "API", "iOS"]);
+
+  function calm(s) {
+    const letters = s.replace(/[^A-Za-z]/g, ""), upper = s.replace(/[^A-Z]/g, "");
+    let out;
+    if (letters.length >= 8 && upper.length / letters.length > 0.6) {
+      // the whole title is shouting: sentence case, real acronyms kept
+      out = s.toLowerCase().replace(/[a-z0-9']+/g, (w) => (ACRONYMS.has(w.toUpperCase()) ? w.toUpperCase() : w));
+      out = out.replace(/^([^a-z]*)([a-z])/, (m, pre, c) => pre + c.toUpperCase());
+    } else {
+      // a few LOUD words: quiet those (4+ letters, so AI, USA and NBA stay)
+      out = s.replace(LOUD, (w) => (w.replace(/[^A-Z]/g, "").length >= 4 && !ACRONYMS.has(w) ? w.toLowerCase() : w));
+    }
+    return out.replace(SHOCK, "").replace(/!{2,}/g, "!").replace(/\?{2,}/g, "?").replace(/ {2,}/g, " ");
+  }
 
   function calmTitles() {
     if (!settings.calmTitles) return;

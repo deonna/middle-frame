@@ -19,7 +19,7 @@ from playwright.sync_api import sync_playwright
 ROOT = Path(__file__).resolve().parents[1]
 EXT = ROOT / "extension"
 CHANNEL = "https://www.youtube.com/@MrBeast/videos"
-LOUD_SEARCH = "https://www.youtube.com/results?search_query=INSANE+GONE+WRONG"
+LOUD_SEARCH = "https://www.youtube.com/@Sidemen/videos"          # titles in ALL CAPS
 GRID = {"x": 120, "y": 0, "width": 1280, "height": 800}
 
 STATS = """() => {
@@ -72,6 +72,8 @@ def main():
         setv(calmTitles=True); pg.wait_for_timeout(2500); after = pg.evaluate(titles)
         loud = lambda ts: sum(1 for t in ts for w in t.split() if sum(c.isupper() for c in w) >= 4 and w.upper() == w)
         results.append(check("calm titles: LOUD words get quiet", loud(before) > 0 and loud(after) == 0, f"{loud(before)} loud words -> {loud(after)}"))
+        shouting = lambda ts: sum(1 for t in ts if sum(c.isalpha() for c in t) >= 8 and sum(c.isupper() for c in t) / sum(c.isalpha() for c in t) > 0.6)
+        results.append(check("calm titles: no title left shouting", shouting(before) > 0 and shouting(after) == 0, f"{shouting(before)} shouting titles -> {shouting(after)}"))
         changed = [(a, b) for a, b in zip(before, after) if a != b][:3]
         for a, b in changed: print("     ", a, " ->  ", b)
         setv(calmTitles=False); pg.wait_for_timeout(2000); back = pg.evaluate(titles)
