@@ -1,5 +1,7 @@
 # Middle Frame
 
+[![ci](https://github.com/deonna/middle-frame/actions/workflows/ci.yml/badge.svg)](https://github.com/deonna/middle-frame/actions/workflows/ci.yml) [![MIT](https://img.shields.io/badge/license-MIT-17171a)](LICENSE)
+
 **YouTube thumbnails, minus the shocked face.**
 
 A tiny Chrome extension that swaps every thumbnail on YouTube for YouTube's own auto-generated frame from the middle of
@@ -41,4 +43,10 @@ bash scripts/package.sh                # -> dist/middle-frame.zip (for the relea
 `extension/content.js` is the whole thing: a `MutationObserver` that reads the video ID out of each thumbnail's image
 URL (so it survives YouTube layout changes) and swaps the image.
 
-Not affiliated with YouTube or Google. MIT licensed.
+## Contributing
+
+Middle Frame is open source and deliberately tiny: no build step, no dependencies. Bug reports with the YouTube page URL
+are the most useful thing you can send. See [CONTRIBUTING.md](CONTRIBUTING.md) and the [Code of Conduct](CODE_OF_CONDUCT.md);
+security reports go through [SECURITY.md](SECURITY.md).
+
+Not affiliated with YouTube or Google. [MIT licensed](LICENSE).

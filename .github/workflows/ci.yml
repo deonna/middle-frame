@@ -1,0 +1,32 @@
+name: ci
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Manifest is valid MV3 and every file it names exists
+        run: |
+          python3 - <<'EOF'
+          import json, pathlib, sys
+          root = pathlib.Path("extension"); m = json.loads((root / "manifest.json").read_text())
+          assert m["manifest_version"] == 3, "manifest_version must be 3"
+          assert m["permissions"] == ["storage"], f"unexpected permissions: {m['permissions']}"
+          files = [*m["icons"].values(), *m["action"]["default_icon"].values(), m["action"]["default_popup"], m["background"]["service_worker"]]
+          files += [f for cs in m["content_scripts"] for f in cs["js"]]
+          missing = [f for f in files if not (root / f).is_file()]
+          assert not missing, f"missing files: {missing}"
+          print("manifest ok:", m["name"], m["version"])
+          EOF
+      - name: Scripts parse
+        run: for f in extension/*.js; do node --check "$f"; done
+      - name: Package
+        run: bash scripts/package.sh
+      - uses: actions/upload-artifact@v4
+        with:
+          name: middle-frame
+          path: dist/middle-frame.zip

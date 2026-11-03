@@ -1,0 +1,29 @@
+name: Something stopped working
+description: A thumbnail or title that Middle Frame should change but doesn't (or changes wrong).
+labels: ["bug"]
+body:
+  - type: input
+    id: url
+    attributes:
+      label: YouTube page URL
+      placeholder: https://www.youtube.com/@channel/videos
+    validations:
+      required: true
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened?
+      description: What you expected, what you saw. A screenshot helps a lot.
+    validations:
+      required: true
+  - type: input
+    id: browser
+    attributes:
+      label: Browser and version
+      placeholder: Chrome 156, Arc, Brave...
+  - type: dropdown
+    id: switches
+    attributes:
+      label: Which switches were on?
+      multiple: true
+      options: ["Middle frames", "Calm titles"]

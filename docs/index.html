@@ -4,85 +4,200 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Middle Frame: YouTube thumbnails, minus the shocked face</title>
-  <meta name="description" content="A tiny Chrome extension that swaps every YouTube thumbnail for YouTube's own frame from the middle of the video.">
+  <meta name="description" content="A tiny, open-source Chrome extension that swaps every YouTube thumbnail for YouTube's own frame from the middle of the video.">
   <meta property="og:title" content="Middle Frame">
   <meta property="og:description" content="YouTube thumbnails, minus the shocked face.">
   <meta property="og:image" content="https://deonna.github.io/middle-frame/img/og.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="theme-color" content="#fbfaf7">
   <link rel="icon" href="img/icon128.png">
+  <link rel="preload" href="fonts/TikTokSans-var.woff2" as="font" type="font/woff2" crossorigin>
   <style>
-    :root { --ink: #17171a; --muted: #5f5e66; --bg: #fbfaf7; --card: #ffffff; --line: #e6e3dc; --mark: #ffe14d; }
+    @font-face {
+      font-family: "TikTok Sans";
+      src: url("fonts/TikTokSans-var.woff2") format("woff2");
+      font-weight: 300 900; font-stretch: 75% 150%; font-display: swap;
+    }
+    @property --reveal { syntax: "<percentage>"; inherits: true; initial-value: 0%; }
+
+    :root {
+      --ink: #17171a; --ink-2: #3a3940; --muted: #5c5b63; --paper: #fbfaf7; --card: #ffffff;
+      --line: #e6e3dc; --line-2: #d6d2c8; --mark: #ffe14d; --mark-deep: #f2c700;
+      --ease-out: cubic-bezier(.16, 1, .3, 1);
+      --radius: 12px;
+      --shadow: 0 1px 2px rgba(23, 23, 26, .06), 0 12px 32px -12px rgba(23, 23, 26, .22);
+      --sans: "TikTok Sans", ui-sans-serif, system-ui, sans-serif;
+    }
     * { box-sizing: border-box; }
-    body { margin: 0; background: var(--bg); color: var(--ink); font: 17px/1.55 -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif; }
-    main { max-width: 980px; margin: 0 auto; padding: 56px 22px 40px; }
-    header { display: flex; align-items: center; gap: 14px; }
-    header img { width: 52px; height: 52px; }
-    h1 { font-size: clamp(34px, 6vw, 54px); line-height: 1.05; letter-spacing: -0.03em; margin: 28px 0 14px; }
-    h1 mark { background: linear-gradient(transparent 12%, var(--mark) 12%, var(--mark) 88%, transparent 88%); color: inherit; padding: 0 .08em; }
-    .lede { font-size: 20px; color: var(--muted); max-width: 640px; margin: 0 0 30px; }
-    .cta { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 44px; }
-    .btn { display: inline-flex; align-items: center; gap: 8px; padding: 13px 20px; border-radius: 10px; font-weight: 650; text-decoration: none; }
-    .btn.primary { background: var(--ink); color: #fff; }
-    .btn.ghost { border: 1.5px solid var(--line); color: var(--ink); background: var(--card); }
-    .compare { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
-    figure { margin: 0; background: var(--card); border: 1px solid var(--line); border-radius: 12px; overflow: hidden; }
-    figure img { display: block; width: 100%; height: auto; }
-    figcaption { padding: 10px 14px; font-size: 14px; color: var(--muted); border-top: 1px solid var(--line); }
-    figcaption b { color: var(--ink); }
-    section { margin-top: 56px; }
-    h2 { font-size: 24px; letter-spacing: -0.015em; margin: 0 0 14px; }
-    ol { padding-left: 22px; } li { margin: 6px 0; }
-    code { background: #f0eee8; padding: 2px 6px; border-radius: 6px; font-size: 15px; }
-    .two { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; }
-    .note { color: var(--muted); font-size: 15px; }
-    footer { margin-top: 64px; padding-top: 18px; border-top: 1px solid var(--line); font-size: 14px; color: var(--muted); display: flex; flex-wrap: wrap; gap: 8px 18px; }
-    footer a, .note a, p a { color: inherit; }
-    @media (max-width: 720px) { .compare, .two { grid-template-columns: 1fr; } main { padding-top: 36px; } }
+    html { scrollbar-color: var(--line-2) var(--paper); -webkit-text-size-adjust: 100%; }
+    body { margin: 0; background: var(--paper); color: var(--ink); font: 400 17.5px/1.6 var(--sans); font-variation-settings: "opsz" 14; caret-color: var(--ink); -webkit-font-smoothing: antialiased; }
+    ::selection { background: var(--mark); color: var(--ink); }
+    a { color: inherit; text-decoration-thickness: 1.5px; text-underline-offset: .2em; text-decoration-color: var(--line-2); transition: text-decoration-color .2s; }
+    a:hover { text-decoration-color: var(--mark-deep); }
+    :focus-visible { outline: 3px solid var(--ink); outline-offset: 3px; border-radius: 6px; }
+    code { font: 500 .88em ui-monospace, "SF Mono", Menlo, monospace; background: #f0ede6; padding: .14em .42em; border-radius: 6px; }
+
+    main { max-width: 1080px; margin: 0 auto; padding: 40px 24px 48px; }
+    .brand { display: flex; align-items: center; gap: 12px; font-weight: 700; font-stretch: 108%; letter-spacing: -.01em; text-decoration: none; width: max-content; }
+    .brand img { width: 40px; height: 40px; }
+
+    .hero { display: grid; gap: 22px; margin: 64px 0 40px; max-width: 760px; }
+    h1 { margin: 0; font-weight: 820; font-stretch: 118%; font-variation-settings: "opsz" 36; font-size: clamp(42px, 7.4vw, 84px); line-height: .98; letter-spacing: -.038em; text-wrap: balance; }
+    h1 .hl { background: linear-gradient(transparent 14%, var(--mark) 14%, var(--mark) 90%, transparent 90%); padding: 0 .06em; margin: 0 -.06em; box-decoration-break: clone; -webkit-box-decoration-break: clone; }
+    .lede { margin: 0; font-size: clamp(18px, 2vw, 21px); line-height: 1.5; color: var(--ink-2); max-width: 60ch; }
+    .cta { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 14px; margin-top: 6px; }
+    .btn { display: inline-flex; align-items: center; gap: 10px; min-height: 50px; padding: 0 22px; border-radius: 10px; font-weight: 650; font-stretch: 104%; text-decoration: none; transition: transform .18s var(--ease-out), box-shadow .18s var(--ease-out), background-color .18s; }
+    .btn svg { width: 18px; height: 18px; flex: none; }
+    .btn.primary { background: var(--ink); color: #fff; box-shadow: 0 1px 2px rgba(23, 23, 26, .2); }
+    .btn.primary:hover { background: #000; transform: translateY(-1px); box-shadow: 0 8px 20px -8px rgba(23, 23, 26, .55); }
+    .btn.secondary { background: var(--card); color: var(--ink); box-shadow: inset 0 0 0 1.5px var(--line-2); }
+    .btn.secondary:hover { box-shadow: inset 0 0 0 1.5px var(--ink); transform: translateY(-1px); }
+    .btn:active { transform: translateY(0); }
+    .cta small { color: var(--muted); font-size: 14.5px; }
+
+    /* the demo: the extension's own switch, wiping the uploaded thumbnails into middle frames */
+    .stage { margin: 0; border-radius: var(--radius); background: var(--card); box-shadow: var(--shadow), 0 0 0 1px var(--line); overflow: hidden; }
+    .bar { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 14px 18px; border-bottom: 1px solid var(--line); }
+    .bar-label { display: grid; gap: 1px; }
+    .bar-label b { font-weight: 650; font-stretch: 104%; }
+    .bar-label span { color: var(--muted); font-size: 14.5px; }
+    .switch { --w: 56px; --h: 32px; position: relative; flex: none; width: var(--w); height: var(--h); border: 0; padding: 0; border-radius: 999px; background: var(--line-2); cursor: pointer; transition: background-color .3s var(--ease-out); }
+    .switch::after { content: ""; position: absolute; top: 4px; left: 4px; width: calc(var(--h) - 8px); height: calc(var(--h) - 8px); border-radius: 50%; background: #fff; box-shadow: 0 1px 3px rgba(23, 23, 26, .35); transition: transform .45s var(--ease-out), background-color .3s; }
+    .switch[aria-checked="true"] { background: var(--ink); }
+    .switch[aria-checked="true"]::after { transform: translateX(calc(var(--w) - var(--h))); background: var(--mark); }
+    .switch:hover::after { box-shadow: 0 2px 6px rgba(23, 23, 26, .4); }
+    .shots { position: relative; display: grid; --reveal: 0%; transition: --reveal 1.1s var(--ease-out); }
+    .shots.on { --reveal: 100%; }
+    .shots > picture { grid-area: 1 / 1; }
+    .shots img { display: block; width: 100%; height: auto; }
+    .shots .after { clip-path: inset(0 calc(100% - var(--reveal)) 0 0); }
+    .shots::after { content: ""; position: absolute; top: 0; bottom: 0; left: var(--reveal); width: 3px; margin-left: -1.5px; background: var(--mark); box-shadow: 0 0 0 1px rgba(23, 23, 26, .12); opacity: 0; transition: opacity .25s; pointer-events: none; }
+    .shots.moving::after { opacity: 1; }
+    .stage figcaption { padding: 12px 18px; border-top: 1px solid var(--line); color: var(--muted); font-size: 15px; }
+    .stage figcaption b { color: var(--ink); font-weight: 650; }
+
+    .details { display: grid; grid-template-columns: 1.05fr 1fr; gap: 56px; margin-top: 80px; padding-top: 40px; border-top: 1px solid var(--line); }
+    h2 { margin: 0 0 14px; font-weight: 760; font-stretch: 112%; font-variation-settings: "opsz" 28; font-size: 26px; line-height: 1.15; letter-spacing: -.022em; text-wrap: balance; }
+    .details section + section { margin-top: 40px; }
+    ol.steps { margin: 0; padding: 0; list-style: none; counter-reset: s; display: grid; gap: 14px; }
+    ol.steps li { counter-increment: s; display: grid; grid-template-columns: 30px 1fr; gap: 12px; align-items: baseline; }
+    ol.steps li::before { content: counter(s); display: grid; place-items: center; width: 26px; height: 26px; border-radius: 50%; background: var(--ink); color: #fff; font-size: 13.5px; font-weight: 700; font-variant-numeric: tabular-nums; transform: translateY(-1px); }
+    .note { color: var(--muted); font-size: 15px; margin: 16px 0 0; }
+    dl { margin: 0; display: grid; gap: 16px; }
+    dt { font-weight: 650; font-stretch: 104%; }
+    dt span { font-weight: 450; color: var(--muted); font-size: 15px; margin-left: 6px; }
+    dd { margin: 2px 0 0; color: var(--ink-2); }
+    p { margin: 0; max-width: 62ch; }
+    p + p { margin-top: 12px; }
+
+    footer { margin-top: 88px; padding-top: 20px; border-top: 1px solid var(--line); display: flex; flex-wrap: wrap; gap: 8px 22px; font-size: 14.5px; color: var(--muted); }
+    footer .sep { margin-left: auto; }
+
+    @media (max-width: 600px) { .shots img { aspect-ratio: 730 / 738; } }
+    @media (max-width: 760px) {
+      main { padding-top: 28px; }
+      .hero { margin: 44px 0 30px; }
+      .details { grid-template-columns: 1fr; gap: 0; margin-top: 56px; }
+      .details > div + div { margin-top: 40px; }
+      .bar { padding: 12px 14px; }
+      footer .sep { margin-left: 0; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .shots, .switch, .switch::after, .btn { transition: none; }
+    }
   </style>
 </head>
 <body>
 <main>
-  <header><img src="img/icon128.png" alt=""><strong>Middle Frame</strong></header>
+  <a class="brand" href="./"><img src="img/icon128.png" alt="" width="40" height="40">Middle Frame</a>
 
-  <h1>YouTube thumbnails,<br>minus the <mark>shocked face</mark>.</h1>
-  <p class="lede">Middle Frame swaps every thumbnail on YouTube for YouTube's own frame from the middle of the video.
-    It's the trick Andrej Karpathy used for <a href="https://karpathy.bearblog.dev/hacker-tube/">HackerTube</a>, on the real YouTube.</p>
-
-  <div class="cta">
-    <a class="btn primary" href="https://github.com/deonna/middle-frame/releases/latest/download/middle-frame.zip">Download for Chrome</a>
-    <a class="btn ghost" href="https://github.com/deonna/middle-frame">Source on GitHub</a>
+  <div class="hero">
+    <h1>YouTube thumbnails, minus the <span class="hl">shocked face</span>.</h1>
+    <p class="lede">Middle Frame swaps every thumbnail on YouTube for YouTube's own frame from the middle of the video.
+      It's the trick Andrej Karpathy used for <a href="https://karpathy.bearblog.dev/hacker-tube/">HackerTube</a>, on the real YouTube.</p>
+    <div class="cta">
+      <a class="btn primary" href="https://github.com/deonna/middle-frame/releases/latest/download/middle-frame.zip">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11m0 0l-4.5-4.5M12 15l4.5-4.5M5 20h14"/></svg>
+        Download for Chrome</a>
+      <a class="btn secondary" href="https://github.com/deonna/middle-frame">
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 00-3.16 19.49c.5.09.68-.22.68-.48v-1.7c-2.78.6-3.37-1.34-3.37-1.34-.45-1.16-1.1-1.47-1.1-1.47-.91-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.9 1.52 2.35 1.08 2.92.83.09-.65.35-1.08.63-1.33-2.22-.25-4.55-1.11-4.55-4.94 0-1.09.39-1.98 1.03-2.68-.1-.25-.45-1.27.1-2.65 0 0 .84-.27 2.75 1.02a9.6 9.6 0 015 0c1.91-1.29 2.75-1.02 2.75-1.02.55 1.38.2 2.4.1 2.65.64.7 1.03 1.59 1.03 2.68 0 3.84-2.34 4.68-4.57 4.93.36.31.68.92.68 1.85v2.74c0 .27.18.58.69.48A10 10 0 0012 2z"/></svg>
+        Open source on GitHub</a>
+      <small>Free. Collects nothing.</small>
+    </div>
   </div>
 
-  <div class="compare">
-    <figure><img src="img/before_grid.png" alt="A YouTube channel page with the uploaded thumbnails: open mouths, big text, arrows."><figcaption><b>Before.</b> The uploaded thumbnails.</figcaption></figure>
-    <figure><img src="img/after_grid.png" alt="The same page with Middle Frame on: each thumbnail is a calm frame from the middle of the video."><figcaption><b>After.</b> What's actually in the video.</figcaption></figure>
-  </div>
+  <figure class="stage">
+    <div class="bar">
+      <div class="bar-label"><b id="sw-label">Middle frames</b><span>Flip it. Same page, same videos.</span></div>
+      <button class="switch" id="sw" role="switch" aria-checked="false" aria-labelledby="sw-label"></button>
+    </div>
+    <div class="shots" id="shots">
+      <picture><source media="(max-width: 600px)" srcset="img/before_grid.webp" type="image/webp"><source media="(max-width: 600px)" srcset="img/before_grid.png"><source srcset="img/before_wide.webp" type="image/webp"><img src="img/before_wide.png" width="1104" height="738" alt="A YouTube channel page with the uploaded thumbnails: open mouths, giant text, arrows."></picture>
+      <picture class="after"><source media="(max-width: 600px)" srcset="img/after_grid.webp" type="image/webp"><source media="(max-width: 600px)" srcset="img/after_grid.png"><source srcset="img/after_wide.webp" type="image/webp"><img src="img/after_wide.png" width="1104" height="738" alt="The same page with Middle Frame on: every thumbnail is a calm frame from the middle of the video."></picture>
+    </div>
+    <figcaption id="cap" aria-live="polite"><b>Off.</b> The uploaded thumbnails.</figcaption>
+  </figure>
 
-  <section class="two">
+  <div class="details">
     <div>
-      <h2>Install (2 minutes)</h2>
-      <ol>
-        <li><a href="https://github.com/deonna/middle-frame/releases/latest/download/middle-frame.zip">Download the zip</a> and unzip it.</li>
-        <li>Open <code>chrome://extensions</code> and turn on <b>Developer mode</b> (top right).</li>
-        <li>Click <b>Load unpacked</b> and pick the unzipped folder.</li>
-        <li>Open YouTube. Click the extension's icon to switch things on and off.</li>
-      </ol>
-      <p class="note">Chrome Web Store listing on the way. Works in Chrome, Edge, Brave and Arc.</p>
+      <section>
+        <h2>Install in 2 minutes</h2>
+        <ol class="steps">
+          <li><span><a href="https://github.com/deonna/middle-frame/releases/latest/download/middle-frame.zip">Download the zip</a> and unzip it.</span></li>
+          <li><span>Open <code>chrome://extensions</code> and turn on <b>Developer mode</b>, top right.</span></li>
+          <li><span>Click <b>Load unpacked</b> and pick the unzipped folder.</span></li>
+          <li><span>Open YouTube. Click the extension's icon to flip things on and off.</span></li>
+        </ol>
+        <p class="note">Chrome Web Store listing on the way. Works in Chrome, Edge, Brave and Arc.</p>
+      </section>
+      <section>
+        <h2>Open source</h2>
+        <p>MIT licensed. The whole extension is one small content script that reads the video ID out of each thumbnail's
+          image address and swaps the image. Read it, fork it, or send a fix.</p>
+        <p><a href="https://github.com/deonna/middle-frame">github.com/deonna/middle-frame</a><br><a href="https://github.com/deonna/middle-frame/blob/main/CONTRIBUTING.md">How to contribute</a></p>
+      </section>
     </div>
     <div>
-      <h2>Two switches</h2>
-      <p><b>Middle frames</b> (on): every thumbnail becomes YouTube's auto-generated frame from mid-video, so you see the video, not the ad for it.</p>
-      <p><b>Calm titles</b> (off): LOUD WORDS get quiet, and the 😱 and !!! go away.</p>
-      <h2 style="margin-top:28px">Privacy</h2>
-      <p>Collects nothing. No analytics, no accounts, no servers. It only runs on youtube.com and saves your two switches in Chrome. <a href="privacy.html">Privacy policy</a>.</p>
+      <section>
+        <h2>Two switches</h2>
+        <dl>
+          <div><dt>Middle frames <span>on</span></dt><dd>Every thumbnail becomes YouTube's auto-generated frame from mid-video, so you see the video, not the ad for it.</dd></div>
+          <div><dt>Calm titles <span>off</span></dt><dd>LOUD WORDS get quiet, and the 😱 and !!! go away.</dd></div>
+        </dl>
+      </section>
+      <section>
+        <h2>Privacy</h2>
+        <p>Collects nothing. No analytics, no accounts, no servers. It only runs on youtube.com and saves your two switches in Chrome. <a href="privacy.html">Privacy policy</a></p>
+      </section>
     </div>
-  </section>
+  </div>
 
   <footer>
     <span>Made by <a href="https://deonnahodges.com">Deonna Hodges</a></span>
     <a href="https://github.com/deonna/middle-frame">GitHub</a>
     <a href="privacy.html">Privacy</a>
-    <span>Not affiliated with YouTube or Google.</span>
+    <span class="sep">Not affiliated with YouTube or Google.</span>
   </footer>
 </main>
+<script>
+  (() => {
+    const sw = document.getElementById("sw"), shots = document.getElementById("shots"), cap = document.getElementById("cap");
+    const still = matchMedia("(prefers-reduced-motion: reduce)").matches;
+    let touched = false, timer;
+    function set(on) {
+      sw.setAttribute("aria-checked", String(on));
+      shots.classList.toggle("on", on);
+      if (!still) { shots.classList.add("moving"); clearTimeout(timer); timer = setTimeout(() => shots.classList.remove("moving"), 1100); }
+      cap.innerHTML = on ? "<b>On.</b> YouTube's own frame from the middle of each video." : "<b>Off.</b> The uploaded thumbnails.";
+    }
+    sw.addEventListener("click", () => { touched = true; set(sw.getAttribute("aria-checked") !== "true"); });
+    if (!still && "IntersectionObserver" in window) {   // flip it once, the first time the demo is in view
+      const io = new IntersectionObserver(([e]) => {
+        if (e.isIntersecting && e.intersectionRatio > 0.55) { io.disconnect(); setTimeout(() => { if (!touched) set(true); }, 650); }
+      }, { threshold: [0, 0.55, 1] });
+      io.observe(shots);
+    }
+  })();
+</script>
 </body>
 </html>
