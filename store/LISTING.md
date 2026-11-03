@@ -24,9 +24,12 @@ Upload: `dist/middle-frame.zip` (run `bash scripts/package.sh`). Dashboard: http
 
   Not affiliated with YouTube or Google.
 
-- **Icon:** `store/icon_512.png` (resize to 128 if asked: `extension/icons/icon128.png`)
-- **Screenshots (1280x800):** `store/screenshot_1_before_after.png`
+- **Store icon (128x128, 96x96 artwork + 16 px padding):** `store/store_icon_128.png`
+- **Screenshot (1280x800):** `store/screenshot_1_before_after.png`
 - **Small promo tile (440x280):** `store/promo_tile_440x280.png`
+- **Marquee promo tile (1400x560):** `store/marquee_1400x560.png`
+- **Global promo video:** a YouTube link. Upload `store/promo_video.mp4` (15.7 s, 1280x720, no audio) to YouTube as
+  Unlisted and paste its URL. Re-record with `python3 scripts/record_promo.py`.
 - **Homepage URL:** https://deonna.github.io/middle-frame/
 - **Support URL:** https://github.com/deonna/middle-frame/issues
 
