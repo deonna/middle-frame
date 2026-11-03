@@ -28,8 +28,8 @@ Upload: `dist/middle-frame.zip` (run `bash scripts/package.sh`). Dashboard: http
 - **Screenshot (1280x800):** `store/screenshot_1_before_after.png`
 - **Small promo tile (440x280):** `store/promo_tile_440x280.png`
 - **Marquee promo tile (1400x560):** `store/marquee_1400x560.png`
-- **Global promo video:** a YouTube link. Upload `store/promo_video.mp4` (17.6 s, 1280x720, with its psychedelic
-  trance score) to YouTube as Unlisted and paste its URL. Rebuild: `python3 scripts/record_promo.py` (live take) then
+- **Global promo video:** https://www.youtube.com/watch?v=9rDW6mrbTfk (Unlisted on her channel). The source is `store/promo_video.mp4` (17.6 s, 1280x720, with its psychedelic
+  trance score). Rebuild: `python3 scripts/record_promo.py` (live take) then
   `python3 scripts/score_promo.py` (music from scratch, picture cut onto the bars, mux).
 - **Homepage URL:** https://deonna.github.io/middle-frame/
 - **Support URL:** https://github.com/deonna/middle-frame/issues
