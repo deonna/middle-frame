@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "Middle Frame",
   "version": "1.0.0",
-  "description": "YouTube thumbnails, minus the shocked face. Shows YouTube's own frame from the middle of each video instead of the uploaded thumbnail.",
+  "description": "YouTube thumbnails, minus the shocked face. Shows YouTube's own frame from the middle of each video instead.",
   "icons": {
     "16": "icons/icon16.png",
     "32": "icons/icon32.png",
@@ -20,11 +20,18 @@
   "background": {
     "service_worker": "background.js"
   },
-  "permissions": ["storage"],
+  "permissions": [
+    "storage"
+  ],
   "content_scripts": [
     {
-      "matches": ["https://www.youtube.com/*", "https://m.youtube.com/*"],
-      "js": ["content.js"],
+      "matches": [
+        "https://www.youtube.com/*",
+        "https://m.youtube.com/*"
+      ],
+      "js": [
+        "content.js"
+      ],
       "run_at": "document_start"
     }
   ]
