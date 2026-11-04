@@ -16,9 +16,10 @@ Site: [deonna.github.io/middle-frame](https://deonna.github.io/middle-frame/)
 
 ## Install
 
-1. [Download the zip](https://github.com/deonna/middle-frame/releases/latest/download/middle-frame.zip) and unzip it.
-2. Open `chrome://extensions` and turn on **Developer mode**.
-3. Click **Load unpacked** and pick the unzipped folder.
+**[Add Middle Frame to Chrome](https://chromewebstore.google.com/detail/middle-frame/fikkjeojpdjlfhahljefeaknolngnhfm)** from the Chrome Web Store.
+
+Or load it unpacked: [download the zip](https://github.com/deonna/middle-frame/releases/latest/download/middle-frame.zip),
+unzip it, open `chrome://extensions`, turn on **Developer mode**, click **Load unpacked** and pick the unzipped folder.
 
 Works in Chrome, Edge, Brave and Arc.
 

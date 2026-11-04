@@ -1,5 +1,7 @@
 # Chrome Web Store listing: Middle Frame
 
+**Live:** https://chromewebstore.google.com/detail/middle-frame/fikkjeojpdjlfhahljefeaknolngnhfm (approved Nov 4 2026)
+
 Upload: `dist/middle-frame.zip` (run `bash scripts/package.sh`). Dashboard: https://chrome.google.com/webstore/devconsole
 
 ## Store listing tab
